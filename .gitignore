@@ -10,3 +10,4 @@ resources/drivers/
 *.box
 *.iso
 *.vfd
+output-*/
