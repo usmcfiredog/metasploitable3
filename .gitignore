@@ -11,3 +11,4 @@ resources/drivers/
 *.iso
 *.vfd
 output-*/
+iso/
