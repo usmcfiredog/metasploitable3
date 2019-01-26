@@ -286,9 +286,9 @@
     }
   ],
   "variables": {
-    "iso_url": "{{template_dir}}/../../iso/en_windows_server_2019_x64_dvd_4cb967d8.iso",
+    "iso_url": "https://software-download.microsoft.com/download/sg/17763.253.190108-0006.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
     "iso_checksum_type": "sha256",
-    "iso_checksum": "4c5dd63efee50117986a2e38d4b3a3fbaf3c1c15e2e7ea1d23ef9d8af148dd2d",
+    "iso_checksum": "57faf4a2ea4484cfdf5e964c539313c061c4d9cac474e723d60405f2ea02d570",
     "autounattend": "{{template_dir}}/../answer_files/2019/Autounattend.xml",
     "scripts_dir": "{{template_dir}}/../../scripts",
     "resources_dir": "{{template_dir}}/../../resources",
