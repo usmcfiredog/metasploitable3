@@ -5,8 +5,8 @@ Vagrant.require_version ">= 1.6.2"
 
 Vagrant.configure("2") do |config|
     config.vm.synced_folder '.', '/vagrant', disabled: true
-    config.vm.define "win2k8"
-    config.vm.box = "metasploitable3-win2k8"
+    config.vm.define "win2k16"
+    config.vm.box = "metasploitable3-win2k16"
     config.vm.communicator = "winrm"
 
     # Admin user name and password

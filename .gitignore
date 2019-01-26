@@ -12,3 +12,4 @@ resources/drivers/
 *.vfd
 output-*/
 iso/
+*_edited*
