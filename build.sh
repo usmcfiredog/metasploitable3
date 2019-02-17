@@ -20,7 +20,12 @@ case "$1" in
                  os_short="win2k8"
                  ;;
 
-    *)           echo "Invalid OS. Valid options are 'ubuntu1404' and 'windows2008'"
+    kali) echo "building kali linux"
+                os_full="kali"
+                os_short="kali"
+                ;;
+
+    *)           echo "Invalid OS. Valid options are 'ubuntu1404' 'kali' and 'windows2008'"
                  exit 1
                  ;;
 esac
@@ -150,7 +155,7 @@ for provider in $providers; do
     mkdir -p "$packer_build_path"
     if [ -e $packer_build_path/$search_string.box ]; then
       echo "It looks like the $provider vagrant box already exists. Skipping the build."
-    fi
+    else
       echo "Building the Vagrant box for $provider..."
       packer_provider="$provider-iso"
       if [ $provider = "qemu" ]; then
@@ -162,17 +167,18 @@ for provider in $providers; do
           echo "Error building the Vagrant boxes using Packer. Please check the output above for any error messages."
           exit 1
       fi
+    fi
 done
 
 echo "Attempting to add the box to Vagrant..."
 
 for provider in $providers; do
-    if vagrant box list | grep -q rapid7/metasploitable3-"$os_short"; then
-        echo "rapid7/metasploitable3-$os_short already found in Vagrant box repository. Skipping the addition to Vagrant."
+    if vagrant box list | grep -q metasploitable3-"$os_short"; then
+        echo "metasploitable3-$os_short already found in Vagrant box repository. Skipping the addition to Vagrant."
         echo "NOTE: If you are having issues, try starting over by doing 'vagrant destroy' and then 'vagrant up'."
     else
         if [ -z $box_import ]; then
-            if vagrant box add $packer_build_path/"$os_full"_"$provider"_"$box_version".box --name rapid7/metasploitable3-$os_short; then
+            if vagrant box add $packer_build_path/"$os_full"_"$provider"_"$box_version".box --name metasploitable3-$os_short; then
             echo "Box successfully added to Vagrant."
             else
             echo "Error adding box to Vagrant. See the above output for any error messages."

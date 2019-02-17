@@ -1,0 +1,99 @@
+{
+    "builders": [
+        {
+            "type": "vmware-iso",
+            "guest_os_type": "otherlinux-64",
+            "iso_url": "{{user `iso_url`}}",
+            "iso_checksum": "{{user `iso_checksum`}}",
+            "iso_checksum_type": "{{user `iso_checksum_type`}}",
+            "communicator": "ssh",
+            "ssh_username": "root",
+            "ssh_password": "toor",
+            "ssh_wait_timeout": "2h",
+            "headless": false,
+            "disk_size": "40960",
+            "http_directory": "{{template_dir}}/../http",
+            "http_port_min": 9001,
+            "http_port_max": 9001,
+            "shutdown_command": "echo 'packer' | sudo -S shutdown -P now",
+            "tools_upload_flavor": "linux",
+            "vm_name": "metasploitable3-kali",
+            "vmx_data": {
+                "cpuid.coresPerSocket": "2",
+                "memsize": "4096",
+                "numvcpus": "2",
+                "scsi0.virtualDev": "lsisas1068"
+            },
+            "boot_wait": "20s",
+            "boot_command": [
+                "<esc><wait>",
+                "/install/vmlinuz ",
+                "auto=true ",
+                "priority=critical ",
+                "initrd=/install/initrd.gz ",
+                "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kali_preseed.cfg ",
+                "-- <enter>"
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "{{user `scripts_dir`}}/kali/ssh/sshd_config",
+            "destination": "/etc/ssh/sshd_config"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "mkdir -p /root/kali/Desktop",
+                "mkdir -p /home/vagrant/Desktop",
+                "mkdir -p /home/vagrant/.ssh",
+                "mkdir -p /root/Desktop",
+                "apt-get update",
+                "DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y -o Dpkg::Options::='--force-confnew'"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "{{user `scripts_dir`}}/kali/scripts/",
+            "destination": "/root/kali"
+        },
+        {
+            "environment_vars": [
+                "HOME_DIR=/root"
+            ],
+            "type": "shell",
+            "inline": [
+                "chmod +x /root/kali/*.sh",
+                "/root/kali/vagrant.sh",
+                "/root/kali/restart_ovt.sh",
+                "/root/kali/shared_folders.sh"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "rm -rf /root/kali",
+                "update-rc.d ssh enable",
+                "service ssh start",
+                "apt-get -y autoremove",
+                "apt-get -y autoclean",
+                "apt-get -y clean"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vagrant",
+            "keep_input_artifact": false,
+            "output": "{{template_dir}}/../builds/kali_{{.Provider}}_{{user `box_version`}}.box"
+        }
+    ],
+    "variables": {
+        "iso_url": "http://cdimage.kali.org/kali-2018.4/kali-linux-2018.4-amd64.iso",
+        "iso_checksum_type": "sha256",
+        "iso_checksum": "7c65d6a319448efe4ee1be5b5a93d48ef30687d4e3f507896b46b9c2226a0ed0",
+        "box_version": "2018.4",
+        "scripts_dir": "{{template_dir}}/../../scripts"
+    }
+}
