@@ -93,7 +93,7 @@
         "iso_url": "http://cdimage.kali.org/kali-2018.4/kali-linux-2018.4-amd64.iso",
         "iso_checksum_type": "sha256",
         "iso_checksum": "7c65d6a319448efe4ee1be5b5a93d48ef30687d4e3f507896b46b9c2226a0ed0",
-        "box_version": "2018.4",
+        "box_version": "2018.4.0",
         "scripts_dir": "{{template_dir}}/../../scripts"
     }
 }
