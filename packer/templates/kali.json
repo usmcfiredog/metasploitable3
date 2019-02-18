@@ -93,7 +93,7 @@
         "iso_url": "http://cdimage.kali.org/kali-2019.1/kali-linux-2019.1-amd64.iso",
         "iso_checksum_type": "sha256",
         "iso_checksum": "5596f2b5da66a45a6e6d14510cedc3fc20980f21d01c18059809ef651e6726dd",
-        "box_version": "2018.4.0",
+        "box_version": "2019.1.2",
         "scripts_dir": "{{template_dir}}/../../scripts"
     }
 }
