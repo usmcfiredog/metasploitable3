@@ -4,7 +4,7 @@ $virtualBoxMinVersion = "5.1.10"
 $packerMinVersion = "0.10.0"
 $vagrantMinVersion = "1.9.0"
 $vagrantreloadMinVersion = "0.0.1"
-$vagrantVmwareMinver="0.0.1"
+$vagrantVmwareMinver = "0.0.1"
 $packer = "packer"
 $vmProvider = ""
 
@@ -13,7 +13,8 @@ function CompareVersions ($actualVersion, $expectedVersion, $exactMatch = $False
     If ($exactMatch) {
         If ($actualVersion -eq $expectedVersion) {
             return $True
-        } else {
+        }
+        else {
             return $False
         }
     }
@@ -21,12 +22,12 @@ function CompareVersions ($actualVersion, $expectedVersion, $exactMatch = $False
     $actualVersion = $actualVersion.split(".")
     $expectedVersion = $expectedVersion.split(".")
 
-    for($i=0; $i -le $expectedVersion.length; $i++) {
-        If([INT]$actualVersion[$i] -gt [INT]$expectedVersion[$i]) {
+    for ($i = 0; $i -le $expectedVersion.length; $i++) {
+        If ([INT]$actualVersion[$i] -gt [INT]$expectedVersion[$i]) {
             return $True
         }
 
-        If([INT]$actualVersion[$i] -lt [INT]$expectedVersion[$i]) {
+        If ([INT]$actualVersion[$i] -lt [INT]$expectedVersion[$i]) {
             return $False
         }
     }
@@ -38,27 +39,30 @@ $expectedVBoxLocation = "C:\Program Files\Oracle\VirtualBox"
 
 If ($(Test-Path "$expectedVBoxLocation\VBoxManage.exe") -eq $True) {
 
-   $vmProvider = "virtualbox"
-   $vboxVersion = cmd.exe /c "$expectedVBoxLocation\VBoxManage.exe" -v
-   $vboxVersion = $vboxVersion.split("r")[0]
+    $vmProvider = "virtualbox"
+    $vboxVersion = cmd.exe /c "$expectedVBoxLocation\VBoxManage.exe" -v
+    $vboxVersion = $vboxVersion.split("r")[0]
 
-} else {
+}
+else {
 
-   Write-Host "VirtualBox is not installed (or not in the expected location of $expectedVBoxLocation\)"
-   Write-Host "Please download and install it from https://www.virtualbox.org/"
+    Write-Host "VirtualBox is not installed (or not in the expected location of $expectedVBoxLocation\)"
+    Write-Host "Please download and install it from https://www.virtualbox.org/"
 
 }
 
 
 If ($vmProvider -eq "virtualbox" -And (CompareVersions -actualVersion $vboxVersion -expectedVersion $virtualBoxMinVersion -exactMatch $False)) {
 
-   Write-Host "Compatible version of VirtualBox found."
+    Write-Host "Compatible version of VirtualBox found."
 
-} elseif ($(Test-Path "$expectedVBoxLocation\VBoxManage.exe") -eq $False) {
+}
+elseif ($(Test-Path "$expectedVBoxLocation\VBoxManage.exe") -eq $False) {
 
-   Write-Host "Virtual Box is not installed proceeding to VMware"
+    Write-Host "Virtual Box is not installed proceeding to VMware"
 
-} else {
+}
+else {
 
     Write-Host "A compatible version of VirtualBox was not found."
     Write-Host "Current Version=[$vboxVersion], Minimum Version=[$virtualBoxMinVersion]"
@@ -73,7 +77,8 @@ If (CompareVersions -actualVersion $packerVersion -expectedVersion $packerMinVer
 
     Write-Host "Compatible version of Packer found."
 
-} else {
+}
+else {
 
     Write-Host "Could not find a compatible version of packer. Please download it from https://www.packer.io/downloads.html and add it to your PATH."
     exit
@@ -93,7 +98,8 @@ If (CompareVersions -actualVersion $vagrantVersion -expectedVersion $vagrantMinV
 
     Write-Host "Compatible version of Vagrant found."
 
-} else {
+}
+else {
 
     Write-Host "Could not find a compatible version of Vagrant at C:\HashiCorp\Vagrant\bin\. Please download and install it from https://www.vagrantup.com/downloads.html."
     exit
@@ -119,7 +125,8 @@ If (![string]::IsNullOrEmpty($vagrantPlugins)) {
 
     }
 
-} else {
+}
+else {
 
     Write-Host "Could not find a compatible version of vagrant-vmware-desktop plugin. Attempting to install..."
     cmd.exe /c "vagrant plugin install vagrant-vmware-desktop"
@@ -128,9 +135,10 @@ If (![string]::IsNullOrEmpty($vagrantPlugins)) {
     # Hacky version of Try-Catch for non-terminating errors.
     # See http://stackoverflow.com/questions/1142211/try-catch-does-not-seem-to-have-an-effect
 
-    if($?) {
+    if ($?) {
         Write-Host "The vagrant-vmware-desktop plugin was successfully installed."
-    } else {
+    }
+    else {
         throw "Error installing vagrant-vmware-desktop plugin. Please check the output above for any error messages."
     }
 
@@ -154,7 +162,8 @@ If (![string]::IsNullOrEmpty($vagrantPlugins)) {
 
     }
 
-} else {
+}
+else {
 
     Write-Host "Could not find a compatible version of vagrant-reload plugin. Attempting to install..."
     cmd.exe /c "vagrant plugin install vagrant-reload"
@@ -163,16 +172,16 @@ If (![string]::IsNullOrEmpty($vagrantPlugins)) {
     # Hacky version of Try-Catch for non-terminating errors.
     # See http://stackoverflow.com/questions/1142211/try-catch-does-not-seem-to-have-an-effect
 
-    if($?) {
+    if ($?) {
         Write-Host "The vagrant-reload plugin was successfully installed."
-    } else {
+    }
+    else {
         throw "Error installing vagrant-reload plugin. Please check the output above for any error messages."
     }
 
 }
 
-function InstallBox($os_full, $os_short)
-{
+function InstallBox($os_full, $os_short) {
     $boxversion = Get-Content .\packer\templates\$os_full.json | Select-String -Pattern "box_version" | Select-String -Pattern "[0-9]\.[0-9]\.[0-9]+"
     $boxversion = $boxversion.toString().trim().split('"')[3]
 
@@ -182,14 +191,16 @@ function InstallBox($os_full, $os_short)
 
         Write-Host "It looks like the Vagrant box already exists. Skipping the Packer build."
 
-    } else {
+    }
+    else {
 
         cmd.exe /c $packer build --only=$vmProvider-iso packer\templates\$os_full.json
 
-        if($?) {
-          Write-Host "Box successfully built by Packer."
-        } else {
-         throw "Error building the Vagrant box using Packer. Please check the output above for any error messages."
+        if ($?) {
+            Write-Host "Box successfully built by Packer."
+        }
+        else {
+            throw "Error building the Vagrant box using Packer. Please check the output above for any error messages."
         }
     }
 
@@ -198,13 +209,15 @@ function InstallBox($os_full, $os_short)
 
     If ($vagrant_box_list -match "metasploitable3-$os_short") {
         Write-Host "metasploitable3-$os_short already found in Vagrant box repository. Skipping the addition to Vagrant."
-    } else {
+    }
+    else {
 
         cmd.exe /c vagrant box add packer\builds\$($os_full)_$($vmProvider)_$boxversion.box --name metasploitable3-$os_short
 
-        if($?) {
+        if ($?) {
             Write-Host "rapmetasploitable3-$os_short box successfully added to Vagrant."
-        } else {
+        }
+        else {
             throw "Error adding metasploitable3-$os_short box to Vagrant. See the above output for any error messages."
         }
     }
@@ -214,32 +227,27 @@ function InstallBox($os_full, $os_short)
 
 Write-Host "All requirements found. Proceeding..."
 
-if($args.Length -eq 0)
-{
-  $option = Read-Host -Prompt 'No box name passed as input. Build both the boxes ? (y/n)';
-  if ($option -eq 'y')
-  {
-    InstallBox -os_full "windows_2008_r2" -os_short "win2k8";
-    InstallBox -os_full "ubuntu_1404" -os_short "ub1404";
-  } else {
-    Write-Host "To build metasploitable boxes separately, use the following commands:";
-    Write-Host "- .\build.ps1 windows2008";
-    Write-Host "- .\build.ps1 ubuntu1404";
-  }
+if ($args.Length -eq 0) {
+    $option = Read-Host -Prompt 'No box name passed as input. Build both the boxes ? (y/n)';
+    if ($option -eq 'y') {
+        InstallBox -os_full "windows_2008_r2" -os_short "win2k8";
+        InstallBox -os_full "ubuntu_1404" -os_short "ub1404";
+    }
+    else {
+        Write-Host "To build metasploitable boxes separately, use the following commands:";
+        Write-Host "- .\build.ps1 windows2008";
+        Write-Host "- .\build.ps1 ubuntu1404";
+    }
 }
-ElseIf ($args.Length -eq 1)
-{
-  if ($args -eq "windows2008")
-  {
-    InstallBox -os_full "windows_2008_r2" -os_short "win2k8";
-  }
-  ElseIf ($args -eq "ubuntu1404")
-  {
-    InstallBox -os_full "ubuntu_1404" -os_short "ub1404";
-  }
-  Else
-  {
-    Write-Host "Invalid OS. Valid options are 'ubuntu1404' and 'windows2008'";
-  }
+ElseIf ($args.Length -eq 1) {
+    if ($args -eq "windows2008") {
+        InstallBox -os_full "windows_2008_r2" -os_short "win2k8";
+    }
+    ElseIf ($args -eq "ubuntu1404") {
+        InstallBox -os_full "ubuntu_1404" -os_short "ub1404";
+    }
+    Else {
+        Write-Host "Invalid OS. Valid options are 'ubuntu1404' and 'windows2008'";
+    }
 }
 Write-Host "";
