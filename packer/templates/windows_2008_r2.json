@@ -185,6 +185,12 @@
       "type": "windows-restart"
     },
     {
+      "type": "powershell",
+      "elevated_user": "Administrator",
+      "elevated_password": "vagrant",
+      "scripts": "{{user `scripts_dir`}}/installs/setup_iis.bat"
+    },
+    {
       "type": "windows-shell",
       "remote_path": "C:/Windows/Temp/script.bat",
       "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
