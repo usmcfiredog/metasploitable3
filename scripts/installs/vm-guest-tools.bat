@@ -18,7 +18,7 @@ if not exist "C:\Windows\Temp\windows.iso" (
 )
 
 cmd /c ""C:\Program Files\7-Zip\7z.exe" x "C:\Windows\Temp\windows.iso" -oC:\Windows\Temp\VMWare"
-cmd /c C:\Windows\Temp\VMWare\setup.exe /S /v"/qn REBOOT=R\"
+cmd /c C:\Windows\Temp\VMWare\setup.exe /S /v "/qn REBOOT=R\"
 
 goto :done
 

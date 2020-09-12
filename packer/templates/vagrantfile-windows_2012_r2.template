@@ -5,8 +5,8 @@ Vagrant.require_version ">= 1.6.2"
 
 Vagrant.configure("2") do |config|
     config.vm.synced_folder '.', '/vagrant', disabled: true
-    config.vm.define "win2k8"
-    config.vm.box = "metasploitable3-win2k8"
+    config.vm.define "win2k12"
+    config.vm.box = "rapid7/metasploitable3-win2k12"
     config.vm.communicator = "winrm"
 
     # Admin user name and password
@@ -27,7 +27,7 @@ Vagrant.configure("2") do |config|
         v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
     end
 
-    config.vm.provider :vmware_desktop do |v, override|
+    config.vm.provider :vmware_fusion do |v, override|
         #v.gui = true
         v.vmx["memsize"] = "2048"
         v.vmx["numvcpus"] = "2"
@@ -37,7 +37,6 @@ Vagrant.configure("2") do |config|
         v.vmx["scsi0.virtualDev"] = "lsilogic"
     end
 
-<<<<<<< HEAD
     config.vm.provider :vmware_workstation do |v, override|
         #v.gui = true
         v.vmx["memsize"] = "2048"
@@ -47,23 +46,4 @@ Vagrant.configure("2") do |config|
         v.vmx["RemoteDisplay.vnc.port"] = "5900"
         v.vmx["scsi0.virtualDev"] = "lsisas1068"
     end
-
-    win2k8.vm.provider "libvirt" do |v|
-      v.memory = "2048"
-      v.cpus = "2"
-      v.video_type = 'qxl'
-      v.input :type => "tablet", :bus => "usb"
-      v.channel :type => 'unix', :target_name => 'org.qemu.guest_agent.0', :target_type => 'virtio'
-      v.channel :type => 'spicevmc', :target_name => 'com.redhat.spice.0', :target_type => 'virtio'
-      v.graphics_type = "spice"
-
-      # Enable Hyper-V enlightenments: https://blog.wikichoon.com/2014/07/enabling-hyper-v-enlightenments-with-kvm.html
-      v.hyperv_feature :name => 'stimer',  :state => 'on'
-      v.hyperv_feature :name => 'relaxed', :state => 'on'
-      v.hyperv_feature :name => 'vapic',   :state => 'on'
-      v.hyperv_feature :name => 'synic',   :state => 'on'
-    end
-
-=======
->>>>>>> 3e978a55fb16cea36c9baa8c8bbaa9face1c05c3
 end

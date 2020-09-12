@@ -9,3 +9,10 @@ resources/drivers/
 *.DS_Store
 *.box
 *.iso
+<<<<<<< HEAD
+=======
+*.vfd
+output-*/
+iso/
+*_edited*
+>>>>>>> 3e978a55fb16cea36c9baa8c8bbaa9face1c05c3
