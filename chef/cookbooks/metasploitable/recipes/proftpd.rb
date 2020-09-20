@@ -56,7 +56,6 @@ execute 'remove_carriage_returns' do
   command "sed -i -e 's/\r//g' /etc/init.d/proftpd"
 end
 
-
 # Setup the IP Renewer
 cookbook_file '/opt/proftpd/proftpd_ip_renewer.rb' do
   source 'proftpd/proftpd_ip_renewer.rb'
@@ -64,7 +63,6 @@ cookbook_file '/opt/proftpd/proftpd_ip_renewer.rb' do
   owner 'root'
   group 'root'
 end
-
 
 cookbook_file '/etc/init/proftpd_ip_renewer.conf' do
   source 'proftpd/proftpd_ip_renewer.conf'

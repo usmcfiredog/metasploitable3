@@ -10,9 +10,9 @@
       "communicator": "ssh",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
-      "ssh_timeout": "2h",
+      "ssh_wait_timeout": "2h",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "guest_os_type": "windows7srv-64",
+      "guest_os_type": "windows8srv-64",
 
       "tools_upload_flavor": "windows",
       "disk_size": 40960,
@@ -37,7 +37,7 @@
         "{{user `resources_dir`}}/certs/thawte_primary_root.cer",
         "{{user `resources_dir`}}/certs/utn-userfirst.cer"
       ],
-      "vm_name": "metasploitable3-win2k8",
+      "vm_name": "metasploitable3-win2k12",
       "vmx_data": {
         "cpuid.coresPerSocket": "2",
         "memsize": "4096",
@@ -55,11 +55,11 @@
       "communicator": "ssh",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
-      "ssh_timeout": "2h",
+      "ssh_wait_timeout": "2h",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "guest_os_type": "Windows2008_64",
+      "guest_os_type": "Windows2012_64",
       "disk_size": 40960,
-      "vm_name": "metasploitable3-win2k8",
+      "vm_name": "metasploitable3-win2k12",
       "floppy_files": [
         "{{user `autounattend`}}",
         "{{user `scripts_dir`}}/configs/microsoft-updates.bat",
@@ -107,11 +107,11 @@
       "accelerator": "kvm",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
-      "ssh_timeout": "2h",
+      "ssh_wait_timeout": "2h",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "disk_size": 40960,
       "format": "qcow2",
-      "vm_name": "metasploitable3-win2k8",
+      "vm_name": "metasploitable3-win2k12",
       "floppy_files": [
         "{{user `autounattend`}}",
         "{{user `scripts_dir`}}/configs/microsoft-updates.bat",
@@ -135,22 +135,13 @@
         "./resources/drivers/virtio/*"
       ],
       "qemuargs": [
-        [
-          "-m",
-          "4096"
-        ],
-        [
-          "-smp",
-          "2"
-        ],
-        [
-          "-display",
-          "gtk"
-        ]
+        ["-m", "4096"],
+        ["-smp", "2"],
+        ["-display", "gtk"]
       ]
     }
   ],
-  "provisioners": [
+"provisioners": [
     {
       "type": "file",
       "source": "{{user `scripts_dir`}}",
@@ -167,6 +158,7 @@
       "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
       "scripts": [
         "{{user `scripts_dir`}}/configs/update_root_certs.bat",
+        "{{user `scripts_dir`}}/installs/vm-guest-tools.bat",
         "{{user `scripts_dir`}}/configs/vagrant-ssh.bat",
         "{{user `scripts_dir`}}/configs/disable-auto-logon.bat",
         "{{user `scripts_dir`}}/configs/enable-rdp.bat"
@@ -184,9 +176,9 @@
       "type": "windows-restart"
     },
     {
-      "type": "powershell",
+      "type":"powershell",
       "inline": [
-        "$env:chocolateyVersion = '0.10.8'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
+        "$env:chocolateyVersion = '0.10.8'; iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))"
       ],
       "pause_before": "60s"
     },
@@ -194,19 +186,11 @@
       "type": "windows-restart"
     },
     {
-      "type": "powershell",
-      "elevated_user": "Administrator",
-      "elevated_password": "vagrant",
-      "scripts": [
-        "{{user `scripts_dir`}}/installs/setup_iis.bat",
-        "{{user `scripts_dir`}}/installs/setup_snmp.bat"
-      ]
-    },
-    {
       "type": "windows-shell",
       "remote_path": "C:/Windows/Temp/script.bat",
       "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
       "scripts": [
+        "{{user `scripts_dir`}}/installs/setup_iis.bat",
         "{{user `scripts_dir`}}/installs/install_boxstarter.bat",
         "{{user `scripts_dir`}}/chocolatey_installs/7zip.bat",
         "{{user `scripts_dir`}}/configs/apply_password_settings.bat",
@@ -236,13 +220,13 @@
         "{{user `scripts_dir`}}/installs/setup_jmx.bat",
         "{{user `scripts_dir`}}/installs/install_ruby.bat",
         "{{user `scripts_dir`}}/installs/install_devkit.bat"
-      ]
+        ]
     },
     {
       "type": "windows-restart"
     },
     {
-      "type": "windows-shell",
+    "type": "windows-shell",
       "remote_path": "C:/Windows/Temp/script.bat",
       "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
       "scripts": [
@@ -254,22 +238,15 @@
         "{{user `scripts_dir`}}/installs/install_manageengine.bat",
         "{{user `scripts_dir`}}/installs/setup_axis2.bat",
         "{{user `scripts_dir`}}/installs/install_backdoors.bat",
+        "{{user `scripts_dir`}}/installs/setup_snmp.bat",
         "{{user `scripts_dir`}}/configs/configure_firewall.bat",
         "{{user `scripts_dir`}}/installs/install_elasticsearch.bat",
-        "{{user `scripts_dir`}}/installs/install_flags.bat"
-      ]
-    },
-    {
-      "type": "shell",
-      "remote_path": "/tmp/script.bat",
-      "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
-      "scripts": [
-        "{{user `scripts_dir`}}/installs/vm-guest-tools.bat",
+        "{{user `scripts_dir`}}/installs/install_flags.bat",
         "{{user `scripts_dir`}}/configs/packer_cleanup.bat"
       ]
     },
     {
-      "type": "powershell",
+      "type":"powershell",
       "inline": [
         "mkdir -p C:/startup"
       ]
@@ -303,20 +280,20 @@
   "post-processors": [
     {
       "type": "shell-local",
-      "inline": ["{{user `ovftool_dir`}}/ovftool {{user `output_dir`}}/metasploitable3-win2k8.vmx {{user `build_dir`}}/metasploitable3-win2k8.ova",
+      "inline": ["{{user `ovftool_dir`}}/ovftool {{user `output_dir`}}/metasploitable3-win2k12.vmx {{user `build_dir`}}/metasploitable3-win2k12.ova",
       "rm -R {{user `output_dir`}}"]
     }
   ],
   "variables": {
-    "iso_url": "http://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso",
+    "iso_url": "http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.17050.WINBLUE_REFRESH.140317-1640_X64FRE_SERVER_EVAL_EN-US-IR3_SSS_X64FREE_EN-US_DV9.ISO",
     "iso_checksum_type": "sha256",
-    "iso_checksum": "30832ad76ccfa4ce48ccb936edefe02079d42fb1da32201bf9e3a880c8ed6312",
-    "autounattend": "{{template_dir}}/../answer_files/2008_r2/Autounattend.xml",
+    "iso_checksum": "6612b5b1f53e845aacdf96e974bb119a3d9b4dcb5b82e65804ab7e534dc7b4d5",
+    "autounattend": "{{template_dir}}/../answer_files/2012_r2/Autounattend.xml",
     "scripts_dir": "{{template_dir}}/../../scripts",
     "resources_dir": "{{template_dir}}/../../resources",
     "output_dir": "{{template_dir}}/../../output-vmware-iso",
     "build_dir": "{{template_dir}}/../builds",
     "ovftool_dir": "/Applications/VMware\\ Fusion.app/Contents/Library/VMware\\ OVF\\ Tool",
-    "box_version": "0.1.0"
+    "box_version": "0.1.14"
   }
 }
