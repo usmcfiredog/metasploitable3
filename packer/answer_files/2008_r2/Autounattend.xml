@@ -7,8 +7,8 @@
                 <PathAndCredentials wcm:keyValue="1" wcm:action="add">
                     <Path>A:\</Path>
                 </PathAndCredentials>
-	    </DriverPaths>
-	</component>
+        </DriverPaths>
+    </component>
         <component xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
             <DiskConfiguration>
                 <Disk wcm:action="add">
@@ -272,7 +272,7 @@
                     <Order>98</Order>
                     <Description>Installing Windows Management Framework 5.0</Description>
                 </SynchronousCommand>
-                 <!--WITHOUT WINDOWS UPDATES -->
+                <!--WITHOUT WINDOWS UPDATES -->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>cmd.exe /c C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -File a:\openssh.ps1 -AutoStart</CommandLine>
                     <Description>Install OpenSSH</Description>
